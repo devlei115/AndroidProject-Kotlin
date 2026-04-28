@@ -1,0 +1,61 @@
+apply plugin: 'maven-publish'
+
+// agp8.0
+android {
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+
+        multipleVariants {
+            withSourcesJar()
+            withJavadocJar()
+            allVariants()
+        }
+    }
+}
+
+group 'com.github.getActivity'
+ext.artifactId = 'base-smallestWidth'
+version "1.0" // 生产库-release 已提交版本
+//version "1.0.b1-SNAPSHOT" // 非生产库-snapshot
+
+afterEvaluate {
+    publishing {
+        publications {
+            plugin(MavenPublication) {
+                from components.release
+                groupId = project.group
+                artifactId = project.ext.artifactId
+                version = project.version
+            }
+        }
+        repositories {
+            maven {
+                if (project.version.toString().endsWith("-SNAPSHOT")) {
+                    url = 'https://packages.aliyun.com/64ffd0f57f62ff9b3d23f7fb/maven/2416122-snapshot-opnzvn'
+                } else {
+                    url = 'https://packages.aliyun.com/64ffd0f57f62ff9b3d23f7fb/maven/2416122-release-rdiwxm'
+                }
+                credentials {
+                    username = '6363548c7b63b44dd7c0b7aa'
+                    password = '4(0Vzw1_hgrA'
+                }
+            }
+        }
+    }
+}
+
+//以下代码会生成 jar 包源文件，如果是不开源码，请不要输入这段
+//aar包内包含注释
+// 定义一个任务来生成包含源代码的JAR文件
+tasks.register('androidSourcesJar', Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+    from android.sourceSets.main.java.sourceFiles
+}
+
+artifacts {
+    archives androidSourcesJar
+}
