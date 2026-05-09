@@ -10,3 +10,6 @@ android {
         consumerProguardFiles("proguard-core.pro")
     }
 }
+
+//aar打包
+apply(from = "aliyun-maven-push_gradle.gradle")
